@@ -2,11 +2,11 @@
 const express = require('express')
 const router = express.Router()
 
-//Data is stored in the form of local array
-let store={
-   posts:[
-       
-   ]
+//Data is stored in the form of local Object
+let store = {
+    posts: [
+
+    ]
 };
 
 
@@ -14,8 +14,9 @@ let store={
 
 //Create new Post
 router.post('/', (req, res) => {
-    const post = req.body;  
+    const post = req.body;
     console.log(post);
+    //get incremented postID
     let postId = getNewId(store.posts);
     post.postId = postId;
     store.posts.push(post);
@@ -30,7 +31,7 @@ router.get('/', (req, res) => {
 
 //Update post by PostId
 router.put('/:postId', (req, res) => {
-    
+
     const postId = req.params.postId;
     const newpost = req.body;
 
@@ -44,8 +45,8 @@ router.put('/:postId', (req, res) => {
     for (let i = 0; i < store.posts.length; i++) {
         let post = store.posts[i]
         if (post.postId == postId) {
-            newpost.postId=postId;
-            newpost.comments=post.comments;
+            newpost.postId = postId;
+            newpost.comments = post.comments;
             store.posts[i] = newpost;
         }
     }
@@ -55,21 +56,20 @@ router.put('/:postId', (req, res) => {
 
 //Get post by postId
 router.get('/:postId', (req, res) => {
-   
+
     const postId = req.params.postId;
     let post = store.posts.find(post => post.postId == postId);
     if (post) {
         res.json(post);
+    } else {
+        res.status(404).send('post not found');
     }
-
-   
-    res.status(404).send('post not found');
 });
 
 
 //Delete Post by postId
 router.delete('/:postId', (req, res) => {
-   
+
     const postId = req.params.postId;
 
     let post = store.posts.find(post => post.postId == postId);
@@ -83,7 +83,6 @@ router.delete('/:postId', (req, res) => {
         }
         return false;
     });
-
     res.json(store.posts);
 });
 
@@ -91,23 +90,23 @@ router.delete('/:postId', (req, res) => {
 router.post('/:postId/comments', (req, res) => {
     const postId = req.params.postId;
     let post = store.posts.find(post => post.postId == postId);
-    
+
     if (!post) {
         res.status(404).send('post not found');
     }
 
     //Adding comment one by one
 
-    let commentArray=req.body;
-    
-    commentArray.forEach(element => {
-     const comment = {};
-     comment['commentId'] = post['comments'] ? post['comments'][post['comments'].length - 1].commentId + 1 : 1;
-     comment['text'] = element.text;
+    let commentArray = req.body;
 
-     post['comments'] = post['comments'] ? post['comments'] : [];
-     post['comments'].push(comment);
-        
+    commentArray.forEach(element => {
+        const comment = {};
+        comment['commentId'] = post['comments'] ? post['comments'][post['comments'].length - 1].commentId + 1 : 1;
+        comment['text'] = element.text;
+
+        post['comments'] = post['comments'] ? post['comments'] : [];
+        post['comments'].push(comment);
+
     });
 
     store.posts.map(b => {
@@ -123,22 +122,21 @@ router.post('/:postId/comments', (req, res) => {
 
 //Get comments for Post by postId
 router.get('/:postId/comments', (req, res) => {
-   
+
     const postId = req.params.postId;
     let post = store.posts.find(post => post.postId == postId);
     if (post) {
         res.json(post.comments);
+    } else {
+        res.status(404).send('post not found');
     }
-
-    // Sending 404 when not found something is a good practice
-    res.status(404).send('post not found');
 });
 
 
 //Update comment by Post ID and comments Id
 
 router.put('/:postId/comments/:commentId', (req, res) => {
-    let newText=req.body.text;
+    let newText = req.body.text;
     const postId = req.params.postId;
     const commentId = req.params.commentId;
     let post = store.posts.find(post => post.postId == postId);
@@ -146,20 +144,20 @@ router.put('/:postId/comments/:commentId', (req, res) => {
         res.status(404).send('post not found');
     }
     let existingComments = post['comments'];
-    
+
     existingComments.map(com => {
-        if (com.commentId== commentId) {
-            com.text=newText;
+        if (com.commentId == commentId) {
+            com.text = newText;
             return com;
         }
         return com;
     });
 
-   
+
     store.posts.map(b => {
         if (b.postId === postId) {
-            b['comments']=existingComments;
-            post['comments']=existingComments;
+            b['comments'] = existingComments;
+            post['comments'] = existingComments;
             return b;
         }
         return b;
@@ -186,7 +184,7 @@ router.delete('/:postId/comments/:commentId', (req, res) => {
         return false;
     });
 
-    post['comments']=filterdComments;
+    post['comments'] = filterdComments;
     store.posts.map(b => {
         if (b.postId === post.postId) {
             return post;
@@ -198,7 +196,7 @@ router.delete('/:postId/comments/:commentId', (req, res) => {
 
 //Genereting primary key for post, incrementing by 1
 const getNewId = (posts) => {
-    
+
     if (posts.length > 0) {
         return posts[posts.length - 1].postId + 1
     } else {
