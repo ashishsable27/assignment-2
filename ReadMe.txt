@@ -8,15 +8,17 @@ App will be listening on port 3000
 
 ----------To Test The Application------------
 
-1. Import the Post&Comments.postman_collection.json in postman client.
-APIS:
+Import the Post&Comments.postman_collection.json in postman client.
 
-1. Create a Post.
-2. Get All Posts.
-3. Get Post by postId
-4. Update Post by postId
-5. Delete Post by postId
-6. Adding comments to Post.
-7. Get Comments for Post
-8. Update Comment for Given post using postId and commentId
-9. Delete Comment on Given post using postID and CommentId
+
+APIS Exposed :
+
+1. Create a Post.    										 POST http://localhost:3000/posts
+2. Get All Posts.   										 GET http://localhost:3000/posts
+3. Get Post by postId  										 GET http://localhost:3000/posts/{postId}
+4. Update Post by postId  									 PUT http://localhost:3000/posts/{postId}
+5. Delete Post by postId   									 DELETE http://localhost:3000/posts/{postId}
+6. Adding comments to Post.  								 POST http://localhost:3000/posts/{postId}/comments
+7. Get Comments for Post     								 GET http://localhost:3000/posts/{postId}/comments
+8. Update Comment for Given post using postId and commentId  PUT http://localhost:3000/posts/{postId}/comments/{commentId}
+9. Delete Comment on Given post using postID and CommentId   DELETE http://localhost:3000/posts/{postId}/comments/{commentId}
